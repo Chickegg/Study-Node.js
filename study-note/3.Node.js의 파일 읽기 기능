@@ -1,0 +1,42 @@
+C reate
+R ead
+U pdate
+D elete
+
+
+⭐Read 하는 방법
+
+let fs = require('fs');
+
+//비동기로 sample.txt의 내용을 utf8로 변환하여 가져온다.
+fs.readFileSync('sample.txt', 'utf8', (err, data) => {
+    console.log(data); // 
+})
+
+이 예제에서는 이런식으로 해주면 된다.
+[data 디렉토리의 파일들을 utf8로 읽어와서 description에 할당되고 이것을 Template Literal로 하여서 넣어준다]
+fs.readFileSync('data/${title}`, 'utf8', (err, description) => {
+    let template = `
+    html code .....
+    <title>${title}</title>
+    <p>${description}</p> 
+    `;
+    response.end(template);
+});
+
+🟢jpeg파일을 불러오는 방법
+위의 방법처럼 실행했을경우 title은 전체 URL의 id값일 것이다. 그러므로 img파일은 불러오지 못한다.
+1.img 디렉토리를 생성한 후 img 파일을 넣어준다. [data 디렉토리와 동일]
+2.data의 img tag 가 있는 부분의 src부분에 'img/<file.name>' 으로 수정해준다. [이파일이 이미지일 경우 다른 방식으로 읽을 것이다.]
+3.if(_url.indexof('/img/') === 0) { //query string의 시작부분이 img라면❓ 이파일은 이미지 파일임으로 이 함수를 통해서 읽어온다.
+let imgSrc = _url.substr(1); /asdf.jpeg인 경우 /부분을 제외한 부분의 text를 읽는다.
+
+readFile(imgSrc, (err, data) =>{ // 이미지파일을 불러오는 부분
+    response.writeHead(200, {'Content-Type': 'image/jpeg'})) // 타입은 image/jpeg이다.
+    response.end(data); // 불러온 이미지파일을 렌더링 해준다.
+});
+    return //함수를 끝내준다.
+}
+이미지 파일을 불러왔으면 뒤에 있는 text를 불러들이는 함수를 실행한다. -end-
+
+

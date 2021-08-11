@@ -1,0 +1,21 @@
+Node main.js // 노드야 main.js좀 실행시켜줘
+
+이때 cd를 통해서 실행 디렉토리를 잘 설정해줘야한다.
+
+let fs = require('fs');
+response.end(fs.readFileSync()) // 이부분은 file을 불러오는 기능을 수행하는 부분이다.
+
+app.listen(3200); // 포트번호를 지정해주는 부분
+
+⭐reaFile 과 readFileSync의 차이점⭐
+
+동기의 경우에는 code의 순서대로 실행을 한다.
+But!! 비동기의 경우에는 순서대로 들어가는 것은 동일하지만 json파일에 접근했을 경우
+data를 가져오는도안 main.js는 멈추지 않고 다음으로 넘어간다.
+시간에 따라 다를수도 있게지만 대부분의 경우 비동기부분이 제일늦게 실행이 될 것이다.
+이것이 reaFile이다.
+
+readFileSync는 동기처리 해주는것이므로 파일을 꼭 읽고온다음에 실행을 해주게 된다. 👌
+
+data 디렉토리에 text만 가지고 있는 파일을 만들어서 각각에 넣어준다.
+HTML, CSS, JavsScript 등등

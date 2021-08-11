@@ -1,0 +1,19 @@
+http://opentutorials.org:3000/main?id=HTML&page=12 가 있을 경우?
+
+protocol = http [통신규칙: 사용자가 접속할떄 어떠한 통신규칙으로 접속할 것인지]
+host(domain) = opentutorials.org [인터넷에 접속되어있는 각각의 컴퓨터주소]
+port = 3000 [한개의 컴퓨터안에 여러개의 서버가 있을 수도 있는데 3000번포트와 연결되어 있는 서버에 접속한다. 포트번호를 생략하면 80으로 접속한다.]
+path = main [컴퓨터안의 어떤 디렉토리의 어떤 파일인지]
+🔥query string = id=HTML&page=12 라고 할 수있다. 
+    [내가 읽고싶은 ㅈ어보는 HTML이고 12page이다. 
+     시작은 ? 로 하기로 약속,
+     값의 이름과 값은 = 로 구분하기로 약속,
+     값과 값은 & 쓰기로 약속]
+
+
+query string에 따라서 다른 data를 보여주는 방법
+
+let _url = require.url; query string부분을 받는 변수
+let myURL = new URL('http://localhost:3200' + _url) // 전체 주소부분
+let queryData = myURL.searchParams.get('id') // ?id= HTML의 경우 HTML을 반환반는 변수
+이다.
