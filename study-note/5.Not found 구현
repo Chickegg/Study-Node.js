@@ -1,0 +1,6 @@
+존재하지 않는 경로로 들어왔을 때
+file을 찾을수 없다는 경로를 알려줄 것이다.
+
+/?id=HTML의 경우 path는 / 밖에 없다 그뒤는 다 querystring부분 object에서보면 search로 나와있을 것이다.
+그럼 /asdf.ico로 접속을 하게 된다면?
+ 정상적인 접속경로가 아니기 때문에 Notfound를 출력해줄것이고 response.writeHead에는(404)로 호출해 줄것이다.

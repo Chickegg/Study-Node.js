@@ -1,0 +1,23 @@
+현재 나의 어플리케이션은 만일 새로운 file,page가 생긴다면 list를 일일이 수작업으로 바꿔줘야 한다는 점이다.
+이를 Node.js를 통해서 기계적으로 해결해 보겠다.
+
+방법1 fs.readdir을 사용해라.
+    const testFolder = './tests/';
+    const fs = require('fs');
+
+    fs.readdir(testFolder, (err, files) => {
+        files.forEach(file => {
+            console.log(file);
+        });
+    })
+
+    풀이💥
+    즉 파일들을 저장해놓은 디렉토리의 경로를 받아와서
+    readdir function을 통해 앞서 저장해놓은 디렉토리의 경로(testFolder), (err, files) => {
+        를 변수로 사용하는  forEach(반복문)을 통해서 각각의 element들을 file이라는 변수로 선언해서 
+        console창에 보여줄 것이다. 
+
+    forEach를 사용하는 이유❓
+        console창에 array형식이아닌 차례대로 출력하기 위해서 
+    }
+

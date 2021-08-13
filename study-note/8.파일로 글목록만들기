@@ -1,0 +1,8 @@
+나의 홈페이지에 적용을 해보자
+기존의 readFilesync 부분 (file에서 data를 읽어오는 부분) 을 진행하기 전에 
+미리 html파일의 리스트 부분을 변수로 저장해두어야 한다.
+
+풀이💥
+    readdir(data, (err, files))를 통해서 list 라는 변수에 <ul><li><a>file</a></li></ul>등의 형식으로 저장해 두어야 한다.
+    그게 완료되면 readFilesycn부분의 글목록부분을 제거해주고 ${list}로 바꿔주면 
+    Node.js에 의해서 data 안의 file에 따라서 자동으로 글목록이 바뀔 것이다.

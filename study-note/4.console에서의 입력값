@@ -1,0 +1,15 @@
+Input (Parameter, Argument)
+    Parameter: 입력된 데이터의 형식
+    Argument: 입력된 데이터의 내용
+Output ()
+
+console에서 입력값을 주는 방법❓
+
+code)
+var args = process.argv;
+console.log(args); 
+
+cmd)
+node test.js Chickegg 할 경우❓
+[node.js.exe 위치, 실행한 js파일위치, 입력값(Chickegg)] 로 console에 출력 될것이다.
+그 입력값을 통해서 조건문등을 사용하여 다양하게 활용 가능하다.
