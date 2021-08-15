@@ -1,0 +1,40 @@
+post로 전송된 데이터를 받기 위해서는 어떻게 해야할까?
+
+    create를 누르면 http://localhost:3200/create 로 이동시키는 부분
+
+        else if(pathname === '/create') {
+            fs.readdir()을 사용해서 기존에 만들어놓은 function 들로 인해서 HTML코드를 구축한다.
+            이 HTML코드 안에 <input type="submit"> 부분을 클릭하게되면
+            다른 콘트롤러 안에 있는 date들이 "http://localhost:3200/create_process"을
+            pathname으로 한 page로 이동하게 된다.
+        } else if (pathname === '/create_process') {
+            let body =''; // 글의 내용이 될 부분
+
+            웹브라우져로 요청을 하는 부분 
+
+                request.on('data', (data) => {
+                    body += data 
+                }) 
+                data를 변수로 가지는 callback함수를 실행하게 되고
+                글의 내용이 될 부분 body에 data를 추가시킨다.
+            더이상 들어오는 data가 없을 경우 실행하는 부분
+            
+                request.on('end', () => {
+                    1.문자열을 객체로 변환하는 method parse를 사용부분
+                        let post = qs.parse(body);
+                    2.변수선언 부분
+                        let title = post.title;
+                        let description = post.description;
+                    3.파일을 생성하는 부분 
+                        fs.wrteFile(파일경로/파일명, 내용, 'utf-8', (err) => {}) 
+                    4.파일을 생성했을 때 url을 강제로 변경시켜 주는 부분 [리다이렉션]
+                        response.writeHead(302, {Location: encodeURI(`/?id=${title}`)});
+                    }
+                }
+
+용어정리
+    request: 요청할 때 웹브라우져가 보낸 정보를 받는 부분
+    response: 응답할 때 우리가 웹브라우져에게 전달하는 부분
+    리다이렉션 : 사용자를 다른 페이지로 강제로 옮기는 것
+
+

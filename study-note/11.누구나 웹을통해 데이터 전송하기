@@ -1,0 +1,24 @@
+콘텐츠를 사용자 누구나 웹을 통해서 생성하고 삭제할 수 있기 위한 방식
+
+🟠HTML - Form 
+    <form action="http://localhost:3200/process_create">
+    한줄의 텍스트를 입력할 수 있는 부분
+        <input type="text" name="title">
+    여러줄의 본문을 입력 할 수 있는 부분  
+        <textarea name="description></textarea>
+    서버로 전송하는 부분
+        <input type="submit">
+    </form>
+    form으로 data들을 감싸준다. 
+
+    form안에 있는 각각의 control들에 사용자들이 입력한 정보를 submint버트는 눌렀을 때 
+    action속성이 가르키는 server로 전송하는 HTML 기능이다.
+
+    이때 문제점이 발생할 수 있다.
+    server에 데이터를 Create, Update, Delete할 경우에는 필요한 data를 url로 보내면 안된다.
+    눈에 보이지 않는 방식으로 사용해야 한다. [쿼리스트링 숨기기]
+        form tag에 method="post"를 입력해준다.
+            <form action="http://localhost:3200/process_create" method="post">
+    
+    정보를 읽는 경우
+        form tag에 method="get" 또는 method를 없애준다.

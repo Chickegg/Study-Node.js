@@ -1,0 +1,8 @@
+중복된 코드가 있을 경우 재사용한 함수를 만들어서 중복된 코드 자리에 집어 넣어주면
+조금더 깔끔한 코드가 될것이다.
+
+function template() {
+    return let list = "asdf"
+}
+
+let list = template(); 이런식으로 써주면 된다.
