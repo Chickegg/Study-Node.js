@@ -1,32 +1,10 @@
 let http = require('http');
 let fs = require('fs');
 let qs = require('querystring');
-// const path = require('path/posix');
+let template = require('./lib/template.js');
+let path = require('path');
+let sanitizeHTML = require('sanitize-html');
 
-function templateHTML(title, list, body, control) { // 타이틀 리스트 바디로 html전체코드를 완성하는 부분
-    return `
-    <!doctype html>
-    <html>
-    <head>
-    <title>WEB1 - ${title}</title>
-    <meta charset="utf-8">
-    </head>
-    <body>
-    <h1><a href="/">WEB</a></h1>
-    ${list}
-    ${control}
-    ${body}
-    </html>
-    `;
-}
-function templateList(files) { // 파일을 읽어와서 list로 만드는 부분
-    let list = '<ul>';
-
-    files.forEach(file => {
-        list += `<li><a href="/?id=${file}">${file}</a></li>`;
-    });
-    return list += '</ul>';
-}
 
 
 let app = http.createServer(function(request,response){
@@ -49,28 +27,35 @@ let app = http.createServer(function(request,response){
             fs.readdir('./data/', (err, files) => {
                 let id = 'Welcome';
                 description = 'Hello, Node.js';
-                let list = templateList(files);
-                let template = templateHTML(id, list,`<h2>${id}</h2>
+                let list = template.list(files);
+                let html = template.HTML(id, list,`<h2>${id}</h2>
                     ${description}`,
                     `<a href="/create">create</a>`);
                 response.writeHead(200);
-                response.end(template);
+                response.end(html);
             });
         } else {
             fs.readdir('./data/', (err, files) => {
-                fs.readFile(`data/${id}`, 'utf8', (err, description) => {
-                    let list = templateList(files);
-                    let template = templateHTML(id, list,`<h2>${id}</h2>
-                        ${description}`,
+                let filteredId = path.parse(id).base;
+                console.log(path.parse(id).base);
+                fs.readFile(`data/${filteredId}`, 'utf8', (err, description) => {
+                    let title = id;
+                    let sanitizedTitle = sanitizeHTML(title);
+                    let sanitizedDescription = sanitizeHTML(description, {
+                        allowedTags: ['h2']
+                    });
+                    let list = template.list(files);
+                    let html = template.HTML(id, list,`<h2>${sanitizedTitle}</h2>
+                        ${sanitizedDescription}`,
                         `<a href="/create">create</a>
-                         <a href="/update?id=${id}">update</a>
+                         <a href="/update?id=${sanitizedTitle}">update</a>
                          <form action="delete_process" method="post">
-                            <input type="hidden" name="id" value="${id}">
+                            <input type="hidden" name="id" value="${sanitizedTitle}">
                             <input type="submit" value="delete">
                          </form>   
                             `);
                     response.writeHead(200);
-                    response.end(template);
+                    response.end(html);
                 });
             });
         }
@@ -78,8 +63,8 @@ let app = http.createServer(function(request,response){
         fs.readdir('./data/', (err, files) => {
             let id = 'WEB - create';
             description = 'Hello, Node.js';
-            let list = templateList(files);
-            let template = templateHTML(id, list, `
+            let list = template.list(files);
+            let html = template.HTML(id, list, `
             <form action="/create_process" method="post">
                 <p><input type="text" name="title" placeholder="Title"></p>
                 <p>
@@ -89,7 +74,7 @@ let app = http.createServer(function(request,response){
             </form>`,
             "");
             response.writeHead(200);
-            response.end(template);
+            response.end(html);
         });
     } else if(pathname === '/create_process') {
         let body ='';
@@ -110,21 +95,23 @@ let app = http.createServer(function(request,response){
         });
     } else if (pathname === '/update') {
         fs.readdir('./data/', (err, files) => {
-            fs.readFile(`data/${id}`, 'utf8', (err, description) => {
-                let list = templateList(files);
-                let template = templateHTML(id, list,
+            let filteredId = path.parse(id).base;
+            fs.readFile(`data/${filteredId}`, 'utf8', (err, description) => {
+                let title = id;
+                let list = template.list(files);
+                let html = template.HTML(id, list,
                     `
                     <form action="/update_process" method="post">
-                        <input type="hidden" name="id" value="${id}">
-                        <p><input type="text" name="title" placeholder="title" value="${id}"></p>
+                        <input type="hidden" name="id" value="${title}">
+                        <p><input type="text" name="title" placeholder="title" value="${title}"></p>
                         <p>
                             <textarea name="description" placeholder="description">${description}</textarea>
                         </p>
                         <p><input type="submit"></p>
                     </form>`,
-                    `<a href="/create">create</a> <a href="/update?id=${id}">update</a>`);
+                    `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`);
                 response.writeHead(200);
-                response.end(template);
+                response.end(html);
             });
         });
     } else if(pathname === '/update_process') {
@@ -157,15 +144,8 @@ let app = http.createServer(function(request,response){
         request.on('end', () => {
             let post = qs.parse(body); // 문자열을 객체로 변환하는 method parse
             let id = post.id;
-            // let title = post.title;
-            // let description = post.description;
-            // fs.rename(`data/${id}`, `data/${title}`, (err) => {
-            //     fs.writeFile(`data/${title}`, description, 'utf-8', (err) => {
-            //         response.writeHead(302, {Location: encodeURI(`/?id=${title}`)});
-            //         response.end();
-            //     });
-            // });
-            fs.unlink(`data/${id}`, (err) => { // 삭제하는 부분
+            let filteredId = path.parse(id).base;
+            fs.unlink(`data/${filteredId}`, (err) => { // 삭제하는 부분
                 // 삭제가 끝나면 홈으로 보내줄것이다.
                 response.writeHead(302, {Location: '/'});
                 response.end();

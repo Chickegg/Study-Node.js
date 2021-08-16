@@ -1,0 +1,22 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "생활코딩님의 Web2 Node.js study",
+  "main": "password.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chickegg/Study-Node.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chickegg/Study-Node.js/issues"
+  },
+  "homepage": "https://github.com/Chickegg/Study-Node.js#readme",
+  "dependencies": {
+    "sanitize-html": "^2.4.0"
+  }
+}

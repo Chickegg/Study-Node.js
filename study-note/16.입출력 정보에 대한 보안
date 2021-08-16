@@ -1,0 +1,75 @@
+실제 서비스 수준이 아닌 보안문제에 대한 인식을 심는것을 목적으로 한다.
+
+만일 id와 password를 js파일에 저장을 해놨다고 쳐보자.
+주소창에 ../password.js 등을 입력하게되면 그것의 내용이 출력하게 된다.
+💢즉 우리 컴퓨터를 탐색할 수 있다는 뜻이다.💢
+
+let path = require('path');
+path.partse('../password.js'); 를 입력하게 되야한다면❓
+    객체가 나오게 된다.
+    {
+        root: '',
+        dir: '..', // 디렉토리
+        base: 'password.js',
+        ext: '.js', // 확장자
+        name: 'password' // 이름
+    }
+즉 외부에서 입력된 정보 내컴퓨터에 있는 정보를 모두 볼 수 있다는 것이다.
+
+이런 오염된 정보를 쳐내기 위한 부분
+    filteredId = path.parse(id).base; 
+변경 전
+    `data/${id}`, 'utf8', (err, description) => {
+        // data 폴더안의 파일들의 제목과 내용을 모두 표시해준다.
+    }
+    
+변경 후
+    filteredId = path.parse(id).base;
+        //즉 내용 전체가아닌 object로 바꾼 data중 base부분의 data
+    `
+    `data/${filteredId}`, 'utf8', (err, description) => {
+        // data폴더 안의 파일들의 data중 base부분(제목)만 가져온다.
+    }
+보안은 어렵다...😵
+
+출력정보에 대한 보안
+
+웹브라우져는 <script> code를 자동으로 해석하여 안의 명령을 수행하는 성질이 있다.
+
+<h2>XSS</h2>
+<script>
+    alert('merong');
+</script>
+
+이런 식으로 입력을 하게되면 접속자들은 merong이라는 경고창을 띄운다.
+즉 입력내용에 JavaScript code를 넣으면 그것이 실행되는 사고가 발생하게 된다...
+
+또한 
+<script>
+location.href="https://op.gg/"
+</script>
+
+이런 입력을 하게되면 자동으로 그 page로 보내버린다.
+이것보다 훨씬 심각한 문제들이 발생할 수 있다.
+사용자의 정보들을 바깥으로 출력할 경우에는 문제가 될 정보들을 filtering해서 보내준다.
+
+출력정보 보안 방법들
+    1.오염된 입력 정보들을 세탁하는 법
+        살균,소톡(sanitize)
+        1-1.script tag와 안의 감싸져있는 내용을 아예 삭제시키는 매우 강력한 보안.
+        1-2.<script>를 웹브라우져가 해석하는 것이 아니라 text로 판단해 아예 표시를 해버리는 것.
+            ex) <script> => &lt;script&gt; 변경해준다.
+
+    2.npm을 사용해서 다른사람이 만든 module을 사용해서 어플리케이션을 빠르게 만드는 법
+        2-1 npm init (package.json 파일을 생성한다)
+        2-2 npm istall -S sanitize-html(작은 부품수준으로 다운로드 받는다)
+            node_modules라는 폴더가 생기고 안에 보면 sanitize-html이라는 폴더도 존재할 것이다.
+        2-3 package.json파일에 dependencies 부분에 "sanitize-html": --- 이 있을 것이다
+            이부분은 이 파일의 내용에 의존하고 있다는 것이다.
+        2-4 let sanitizedTitle = sanitizeHTML(title);
+            let sanitizedDescription = sanitizeHTML(description);
+            이렇게 해주면 예민한 tag들이 있으면 살균해서 실제로는 존재하지만 눈에 보이지 않고 실행하지 않게 해준다.
+        2-5 만일 tag중 일부분을 허용할려면❓   
+            sanitizeHTML(description, {
+                allowedTags: ['a','h1'] // 등을 넣어주면 된다.
+            }) 과거에는 h1 ~ h6까지 넣어줘야 했지만 현재는 초기값으로 들어가 있다.
